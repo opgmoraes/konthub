@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { getAuth, GoogleAuthProvider } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // COLE AQUI O SEU FIREBASE CONFIG (esse abaixo é só um exemplo)
@@ -18,3 +18,4 @@ const app = initializeApp(firebaseConfig);
 // Exporta as funções para usarmos nas telas do sistema
 export const auth = getAuth(app);
 export const db = getFirestore(app);
+export const googleProvider = new GoogleAuthProvider();
