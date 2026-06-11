@@ -23,13 +23,11 @@ function Perfil() {
     try {
       let atualizado = false;
 
-      // 1. Atualiza o Nome
       if (nome !== user.displayName) {
         await updateProfile(user, { displayName: nome });
         atualizado = true;
       }
 
-      // 2. Atualiza a Senha (se o usuário digitou alguma coisa)
       if (senha) {
         if (senha.length < 6) {
           setMensagem({
@@ -40,7 +38,7 @@ function Perfil() {
           return;
         }
         await updatePassword(user, senha);
-        setSenha(""); // Limpa o campo
+        setSenha("");
         atualizado = true;
       }
 
@@ -52,12 +50,11 @@ function Perfil() {
       }
     } catch (error) {
       console.error("Erro ao atualizar perfil:", error);
-      // O Firebase exige que o usuário tenha feito login recentemente para mudar a senha
       if (error.code === "auth/requires-recent-login") {
         setMensagem({
           tipo: "erro",
           texto:
-            "Por motivos de segurança, saia e faça login novamente para alterar a senha.",
+            "Por segurança, saia e faça login novamente para alterar a senha.",
         });
       } else {
         setMensagem({
@@ -67,7 +64,6 @@ function Perfil() {
       }
     } finally {
       setIsSubmitting(false);
-      // Apaga a mensagem de sucesso após 3 segundos
       setTimeout(() => setMensagem({ tipo: "", texto: "" }), 3000);
     }
   };
@@ -84,7 +80,6 @@ function Perfil() {
       </div>
 
       <div className="bg-surface border border-DEFAULT rounded-[24px] p-8 shadow-sm">
-        {/* Avatar Visual (Apenas Demonstração) */}
         <div className="flex items-center gap-6 mb-8 pb-8 border-b border-DEFAULT">
           <div className="relative">
             <img
@@ -108,7 +103,6 @@ function Perfil() {
           </div>
         </div>
 
-        {/* Formulário de Atualização */}
         <form onSubmit={handleSubmit} className="space-y-5">
           {mensagem.texto && (
             <div
@@ -131,9 +125,6 @@ function Perfil() {
               disabled
               className="w-full h-[42px] px-4 bg-page/50 text-muted text-[13px] rounded-xl border border-DEFAULT cursor-not-allowed"
             />
-            <p className="text-[11px] text-muted mt-1.5 ml-1">
-              O e-mail não pode ser alterado.
-            </p>
           </div>
 
           <div>
@@ -166,16 +157,10 @@ function Perfil() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="px-6 py-3 rounded-full text-[13px] font-semibold transition-all duration-200 bg-navy-800 text-lime-400 hover:bg-navy-900 shadow-lg hover:shadow-xl disabled:opacity-50 flex items-center gap-2"
+              className="px-6 py-3 rounded-full text-[13px] font-semibold transition-all duration-200 bg-navy-800 text-lime-400 hover:bg-navy-900 shadow-lg disabled:opacity-50 flex items-center gap-2"
             >
-              {isSubmitting ? (
-                "A guardar..."
-              ) : (
-                <>
-                  <i className="ti ti-device-floppy text-[16px]"></i>
-                  Guardar Alterações
-                </>
-              )}
+              <i className="ti ti-device-floppy text-[16px]"></i>
+              {isSubmitting ? "A guardar..." : "Guardar Alterações"}
             </button>
           </div>
         </form>

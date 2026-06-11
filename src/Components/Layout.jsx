@@ -47,6 +47,8 @@ function Layout() {
     if (isActive("/clientes")) return "Empresas e Clientes";
     if (isActive("/tarefas")) return "Quadro de Tarefas";
     if (isActive("/financeiro")) return "Controle Financeiro";
+    if (isActive("/documentos")) return "Gestão de Documentos";
+    if (isActive("/equipe")) return "Gestão da Equipe";
     return "Painel";
   };
 
@@ -119,6 +121,22 @@ function Layout() {
               label="Financeiro"
               icon="ti ti-receipt-2"
               path="/financeiro"
+            />
+            <MenuItem
+              label="Documentos"
+              icon="ti ti-folder"
+              path="/documentos"
+            />
+
+            <div className="px-5 pb-2 pt-6">
+              <p className="text-[11px] font-bold uppercase text-[#AED93F]/60 tracking-[0.1em]">
+                Gerenciamento
+              </p>
+            </div>
+            <MenuItem
+              label="Minha Equipe"
+              icon="ti ti-users-group"
+              path="/equipe"
             />
           </nav>
 
