@@ -9,7 +9,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 
-function Equipe() {
+function Equipes() {
   const [membros, setMembros] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -33,7 +33,7 @@ function Equipe() {
       }));
       setMembros(lista);
     } catch (error) {
-      console.error("Erro ao procurar equipa:", error);
+      console.error("Erro ao buscar equipa:", error);
     } finally {
       setLoading(false);
     }
@@ -61,8 +61,9 @@ function Equipe() {
   };
 
   const handleDelete = async (id, nome) => {
+    const nomeExibicao = nome || "este membro";
     const confirmacao = window.confirm(
-      `Remover "${nome}" da equipa do escritório?`,
+      `Remover ${nomeExibicao} da equipe do escritório?`,
     );
     if (!confirmacao) return;
 
@@ -94,10 +95,16 @@ function Equipe() {
       setIsModalOpen(false);
       fetchEquipe();
     } catch (error) {
-      console.error("Erro ao guardar membro da equipa:", error);
+      console.error("Erro ao guardar membro da equipe:", error);
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  // Função para pegar as iniciais sem quebrar o React
+  const getIniciais = (nome) => {
+    if (!nome) return "US";
+    return nome.substring(0, 2).toUpperCase();
   };
 
   return (
@@ -105,10 +112,10 @@ function Equipe() {
       <div className="flex justify-between items-center mb-6">
         <div>
           <h1 className="text-[18px] font-bold text-primary tracking-tight">
-            Gestão da Equipa
+            Gestão da Equipe
           </h1>
           <p className="text-[13px] text-muted mt-1">
-            Controle quem acede ao escritório e gira permissões.
+            Controle quem acessa o escritório e gerencie permissões.
           </p>
         </div>
         <button
@@ -122,7 +129,7 @@ function Equipe() {
       <div className="k-card p-0 overflow-hidden">
         {loading ? (
           <div className="p-12 text-center text-muted text-[13px]">
-            A procurar membros da equipa...
+            Buscando membros da equipe...
           </div>
         ) : membros.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
@@ -162,24 +169,26 @@ function Equipe() {
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-navy-800 text-lime-400 flex items-center justify-center text-[11px] font-bold">
-                          {m.nome.substring(0, 2).toUpperCase()}
+                          {getIniciais(m.nome)}
                         </div>
                         <div>
                           <p className="text-[13px] font-medium text-primary">
-                            {m.nome}
+                            {m.nome || "Usuário Sem Nome"}
                           </p>
-                          <p className="text-[11px] text-muted">{m.cargo}</p>
+                          <p className="text-[11px] text-muted">
+                            {m.cargo || "Sem cargo"}
+                          </p>
                         </div>
                       </div>
                     </td>
                     <td className="px-5 py-3 text-[13px] text-secondary">
-                      {m.email}
+                      {m.email || "-"}
                     </td>
                     <td className="px-5 py-3">
                       <span
                         className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${m.funcao === "administrador" ? "bg-lime-500/10 text-lime-600" : "bg-slate-500/10 text-muted"}`}
                       >
-                        {m.funcao}
+                        {m.funcao || "operador"}
                       </span>
                     </td>
                     <td className="px-5 py-3 text-right">
@@ -213,7 +222,7 @@ function Equipe() {
           <div className="bg-surface border border-DEFAULT rounded-[18px] shadow-2xl w-full max-w-md overflow-hidden">
             <div className="px-6 py-4 border-b border-DEFAULT flex justify-between items-center">
               <h3 className="text-[15px] font-bold text-primary">
-                {editingId ? "Editar Membro" : "Convidar para Equipa"}
+                {editingId ? "Editar Membro" : "Convidar para Equipe"}
               </h3>
               <button
                 onClick={() => setIsModalOpen(false)}
@@ -300,7 +309,7 @@ function Equipe() {
                   className="px-5 py-2.5 rounded-md text-[13px] font-semibold bg-navy-800 text-lime-400 hover:bg-navy-900"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "A guardar..." : "Confirmar"}
+                  {isSubmitting ? "Salvando..." : "Confirmar"}
                 </button>
               </div>
             </form>
@@ -311,4 +320,4 @@ function Equipe() {
   );
 }
 
-export default Equipe;
+export default Equipes;
