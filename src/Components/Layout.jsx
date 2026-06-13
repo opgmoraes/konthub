@@ -10,14 +10,12 @@ function Layout() {
   const [theme, setTheme] = useState("dark");
   const [user, setUser] = useState(null);
 
-  // 1. Monitoriza o tema atual
   useEffect(() => {
     const currentTheme =
       document.documentElement.getAttribute("data-theme") || "dark";
     setTheme(currentTheme);
   }, []);
 
-  // 2. Procura os dados do utilizador logado no Firebase (Foto, Nome, Email)
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -48,11 +46,10 @@ function Layout() {
     if (isActive("/tarefas")) return "Quadro de Tarefas";
     if (isActive("/financeiro")) return "Controle Financeiro";
     if (isActive("/documentos")) return "Gestão de Documentos";
-    if (isActive("/equipe")) return "Gestão da Equipe";
+    if (isActive("/equipes")) return "Gestão da Equipe";
     return "Painel";
   };
 
-  // Componente interno para os botões do menu lateral estilo 'Pill'
   const MenuItem = ({ label, icon, path, disabled }) => {
     const active = isActive(path);
     return (
@@ -74,12 +71,12 @@ function Layout() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#020F28] text-primary transition-colors duration-300 font-sans">
-      {/* SIDEBAR FLUTUANTE (ESTILO GLASSMORPHISM) */}
-      <aside className="w-[280px] p-5 flex flex-col h-screen sticky top-0 z-20">
-        <div className="flex-1 bg-white/[0.03] backdrop-blur-xl rounded-[32px] border border-white/[0.05] p-6 flex flex-col shadow-2xl shadow-black/20">
-          {/* TOPO ESQUERDO: LOGO E NOME KONT HUB */}
-          <div className="flex items-center gap-3.5 mb-10 px-2 mt-2">
+    <div className="flex h-screen w-full bg-[#020F28] text-primary overflow-hidden transition-colors duration-300 font-sans">
+      {/* SIDEBAR FLUTUANTE */}
+      <aside className="w-[280px] p-5 flex flex-col h-full z-20">
+        <div className="flex-1 bg-white/[0.03] backdrop-blur-xl rounded-[32px] border border-white/[0.05] p-6 flex flex-col shadow-2xl shadow-black/20 overflow-hidden">
+          {/* TOPO ESQUERDO: LOGO */}
+          <div className="flex items-center gap-3.5 mb-6 px-2 mt-2 shrink-0">
             <img
               src="/logo-dark.png"
               alt="Logo Kont Hub"
@@ -93,8 +90,8 @@ function Layout() {
             </span>
           </div>
 
-          {/* MENU DE NAVEGAÇÃO */}
-          <nav className="flex-1 space-y-2.5">
+          {/* NAVEGAÇÃO ROLÁVEL */}
+          <nav className="flex-1 space-y-2.5 overflow-y-auto pb-4 pr-1 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
             <div className="px-5 pb-2">
               <p className="text-[11px] font-bold uppercase text-[#AED93F]/60 tracking-[0.1em]">
                 Principal
@@ -136,12 +133,12 @@ function Layout() {
             <MenuItem
               label="Minha Equipe"
               icon="ti ti-users-group"
-              path="/equipe"
+              path="/equipes"
             />
           </nav>
 
-          {/* SAIR DO SISTEMA */}
-          <div className="pt-6 border-t border-white/10">
+          {/* BOTÃO DE SAIR FIXO NO RODAPÉ */}
+          <div className="pt-6 border-t border-white/10 shrink-0">
             <button
               onClick={handleLogout}
               className="w-full flex items-center gap-3.5 px-5 py-3 rounded-full text-sm font-medium text-white/50 hover:bg-red-500/10 hover:text-red-400 transition-all duration-200"
@@ -154,19 +151,16 @@ function Layout() {
       </aside>
 
       {/* ÁREA DE CONTEÚDO PRINCIPAL */}
-      <div className="flex-1 flex flex-col h-screen overflow-hidden py-5 pr-5">
-        {/* TOPBAR SUPERIOR */}
-        <header className="h-[76px] bg-surface rounded-t-[32px] border-b border-DEFAULT flex items-center justify-between px-8 transition-colors duration-300 shadow-sm z-10">
-          {/* TÍTULO DA TELA */}
+      <div className="flex-1 flex flex-col h-full overflow-hidden py-5 pr-5">
+        {/* TOPBAR */}
+        <header className="h-[76px] bg-surface rounded-t-[32px] border-b border-DEFAULT flex items-center justify-between px-8 transition-colors duration-300 shadow-sm z-10 shrink-0">
           <div className="flex items-center gap-2">
             <h2 className="text-[17px] font-bold text-primary tracking-tight">
               {getPageTitle()}
             </h2>
           </div>
 
-          {/* LADO DIREITO: BUSCA, TEMA E PERFIL DO UTILIZADOR */}
           <div className="flex items-center gap-5">
-            {/* BARRA DE BUSCA EM PÍLULA ALINHADA */}
             <div className="relative hidden md:block">
               <i className="ti ti-search absolute left-4 top-1/2 -translate-y-1/2 text-muted text-[15px]"></i>
               <input
@@ -176,7 +170,6 @@ function Layout() {
               />
             </div>
 
-            {/* BOTÃO ALTERNAR TEMA CLARO/ESCURO */}
             <button
               onClick={toggleTheme}
               className="w-[38px] h-[38px] flex items-center justify-center rounded-full bg-page hover:bg-subtle text-muted transition-colors border border-DEFAULT"
@@ -193,10 +186,8 @@ function Layout() {
               )}
             </button>
 
-            {/* SEPARADOR VISUAL */}
             <div className="w-[1px] h-7 bg-DEFAULT mx-1"></div>
 
-            {/* EXIBIÇÃO DE PERFIL DO UTILIZADOR (CLICÁVEL) */}
             <div
               onClick={() => navigate("/perfil")}
               className="flex items-center gap-3 cursor-pointer group p-1.5 rounded-full hover:bg-white/[0.03] transition-colors"
@@ -209,14 +200,13 @@ function Layout() {
                   {user?.email || "Conectado"}
                 </p>
               </div>
-
               <div className="relative">
                 <img
                   src={
                     user?.photoURL ||
                     `https://ui-avatars.com/api/?name=${user?.displayName || user?.email || "A"}&background=041B47&color=AED93F&bold=true`
                   }
-                  alt="Perfil do Utilizador"
+                  alt="Perfil"
                   className="w-[38px] h-[38px] rounded-full object-cover border-2 border-[#AED93F]/30 group-hover:border-[#AED93F] transition-colors"
                 />
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-lime-500 border-2 border-surface rounded-full"></span>
@@ -225,7 +215,7 @@ function Layout() {
           </div>
         </header>
 
-        {/* EXIBIÇÃO DAS PÁGINAS INTERNAS */}
+        {/* ÁREA DAS PÁGINAS INTERNAS */}
         <main className="flex-1 bg-surface rounded-b-[32px] overflow-y-auto p-8 shadow-inner border border-t-0 border-DEFAULT">
           <Outlet />
         </main>
