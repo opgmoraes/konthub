@@ -7,7 +7,7 @@ import Financeiro from "./pages/Financeiro";
 import Perfil from "./pages/Perfil";
 import Documentos from "./pages/Documentos";
 import Equipes from "./pages/Equipes"; // <-- Agora procura o arquivo exato com 'S'
-import Layout from "./components/Layout";
+import Layout from "./Components/Layout";
 import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
